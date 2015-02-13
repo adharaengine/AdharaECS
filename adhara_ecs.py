@@ -6,11 +6,14 @@ components = db.add_node() #all components link to this
 entities = db.add_node() #all entities link to this
 rt_systems = db.add_node() #all real time systems link to this
 
-def create_assemblage(attributes={}):
+def create_assemblage(attributes=None):
     '''
     A function to create an assemblage, or blueprint for componenets
     attributes is a dict of attributes for the assemblage
     '''
+    if not attributes:
+        attributes = {}
+
     node = db.add_node(attributes)
     db.add_edge(node, assemblages)
 
@@ -38,19 +41,24 @@ def create_component(assemblage):
     return node
 
 
-def create_entity(assemblages=[], components=[]):
+def create_entity(assemblages=None, components=None):
     '''
-    A function to create and entity from a list of components
+    A function to create and entity from a list of components or assemblages
     components is an optional list of components
     assemblages is an optional list of assemblages,
     from which components will be constructed
     '''
 
+    if not components:
+        components = []
+
+
     node = db.add_node()
     db.add_edge(node, entities)
 
-    for a in assemblages:
-        components.append(create_component(a))
+    if assemblages:
+        for a in assemblages:
+            components.append(create_component(a))
 
     for c in components:
         db.add_edge(node, c)
